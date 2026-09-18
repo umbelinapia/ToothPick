@@ -1,9 +1,10 @@
 # Arm firmware
 
-**Final:** [`final/FINALONE.ino`](final/FINALONE.ino) — the version that ran on
-the robot. Controls 3 stepper joints (J1/J2/J3) and 2 servos (gripper, flip)
-on an ESP32-S3, with per-joint homing, a serial command API, and safety
-interlocks (flip only at true J3 home, drop only at J1 home).
+**Final:** [`final/arm_controller.ino`](final/arm_controller.ino) — the
+version that ran on the robot. Controls 3 stepper joints (J1/J2/J3) and 2
+servos (gripper, flip) on an ESP32-S3, with per-joint homing, a serial
+command API, and safety interlocks (flip only at true J3 home, drop only at
+J1 home).
 
 **Iterations** (`iterations/`, in build order) — kept for the project record:
 

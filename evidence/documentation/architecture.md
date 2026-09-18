@@ -52,7 +52,7 @@ read serial input → is it one valid, recognised command? → no: return an
 error over serial → yes: execute the command and report `DONE`.
 
 This request/acknowledge handshake (host blocks on `DONE`/`ERROR` per command,
-see `wait_for_done()` in [`FINALCODEMAX.py`](../../software/vision-pick-and-place/final/FINALCODEMAX.py))
+see `wait_for_done()` in [`pick_and_place_controller.py`](../../software/vision-pick-and-place/final/pick_and_place_controller.py))
 is what keeps the two independently-running loops in lock-step despite
 running on separate microcontrollers connected only by serial + a shared Wi-Fi
 network for the camera link.
@@ -62,5 +62,5 @@ network for the camera link.
 - `flipUp()` / `flipDown()` only execute when J3 is at its true home switch
 - `dropOpen()` only executes when J1 is at its home switch
 - Both are enforced in firmware (`flipIsSafe()`, `dropIsSafe()` in
-  [`FINALONE.ino`](../../firmware/arm-controller/final/FINALONE.ino)), not just in the host
+  [`arm_controller.ino`](../../firmware/arm-controller/final/arm_controller.ino)), not just in the host
   script, so a bug in the Python sequencing can't command an unsafe motion

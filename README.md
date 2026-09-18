@@ -35,40 +35,68 @@ with no person in the loop.
 
 ## Project outcomes
 
-- Working end-to-end pipeline: home → move to camera pose → detect disc →
-  pick → home → flip → move to drop → place → home
-  (see [`firmware/`](firmware) and [`software/`](software))
-- Vision pipeline validated against the measured part: mean diameter
-  **25.76 mm**, mean height **6.26 mm** — see [`evidence/measurements/`](evidence/measurements)
-- Full sequence built, tested, and demonstrated at the Viva Voce — see
-  [`evidence/documentation/presentations/`](evidence/documentation/presentations)
-  and [`evidence/videos/pick-and-place-demo.MOV`](evidence/videos/pick-and-place-demo.MOV)
+Built and demonstrated a working end-to-end pipeline: home all joints, move
+to a fixed camera pose, detect the disc, pick it up, home again, flip it,
+move to the drop position, and place it — then reset for the next cycle. The
+vision pipeline was validated against the actual part geometry (mean
+diameter 25.76 mm, mean height 6.26 mm), and the full sequence was built,
+tested, and demonstrated live at the Viva Voce.
 
-## Hardware
+## How the system works
 
-- 3-DOF gantry-style robot arm: gearbox drivetrain on toothed rails
-- 3 stepper motors (joints J1/J2/J3) + 2 micro servos (gripper open/close, flip)
-- Homing limit switches on every joint for a repeatable reference position
-- **ESP32-S3-DEV2** as the main arm controller (compact, WiFi/Bluetooth, drives
-  steppers + servos, exposes a serial command API)
-- Separate **ESP32-S3 AI camera module** (OV3660) for vision, wired to a
-  stripboard to minimise loose wiring and disconnects
-- 3D-printed structural/end-effector parts — CAD in [`hardware/cad/`](hardware/cad)
+The robot is a 3-DOF Cartesian gantry rather than an articulated arm, built
+from IGUS Apiro modular drive gear units on toothed-belt rails. A gantry was
+chosen over a rotary-jointed arm because each axis maps directly onto a
+Cartesian/joint coordinate — no inverse-kinematics solve is needed to convert
+a target position into motor commands, which kept both the mechanical build
+and the control code simpler. Three stepper motors drive the three linear
+joints (J1, J2, J3), and two micro servos handle the end-effector: one opens
+and closes the gripper, the other flips it between "pick" and "drop"
+orientation.
 
-## System architecture
+**Arm control.** An ESP32-S3 runs the low-level motion firmware. Each joint
+is homed against a physical limit switch before every cycle, so the robot
+always starts from a known, repeatable reference position rather than
+trusting wherever it happened to stop last time. Each joint also has its own
+step-pulse timing, tuned individually so lighter joints move quickly without
+the heavier ones losing steps. On top of that sits a small text-based
+command protocol read over serial — things like `home(J1)`, `coords(J2,
+speed, position)`, `open()`, `close()`, `flipUp()`, `flipDown()`, and
+`cameraPose()` — where every command blocks until the arm reports back
+`DONE` or `ERROR: ...`, so the caller always knows exactly when a move has
+actually finished. Two safety interlocks are enforced in the firmware itself,
+not just in the higher-level script: the gripper can only flip when J3 is at
+its true home position, and it can only drop at the destination when J1 is
+at home — both physically the only positions where those motions are safe.
 
-| Layer | Location | Role |
-|---|---|---|
-| Arm firmware | [`firmware/arm-controller/final/FINALONE.ino`](firmware/arm-controller/final/FINALONE.ino) | Runs on the arm's ESP32-S3. Drives steppers/servos, handles homing, and exposes a serial command API (`home(J1)`, `coords(J2,100,8000)`, `open()`, `close()`, `flipUp()`, `flipDown()`, `cameraPose()`, `pos()`). Enforces safety interlocks — flipping is only allowed when J3 is at true home, and drop-open is only allowed when J1 is at home. |
-| Camera firmware | [`firmware/camera/CameraWebServer.ino`](firmware/camera/CameraWebServer.ino) | Runs on the camera's ESP32-S3. Serves a `/capture` HTTP endpoint so the host can pull a still frame over Wi-Fi. |
-| Host controller | [`software/vision-pick-and-place/final/FINALCODEMAX.py`](software/vision-pick-and-place/final/FINALCODEMAX.py) | Runs on a laptop. Talks to the arm over serial and the camera over HTTP, does the OpenCV disc detection + coordinate mapping, and drives the full pick → flip → drop cycle described above. |
+**Vision.** A second ESP32-S3 with a camera module serves single frames over
+Wi-Fi on request. The host laptop pulls a frame, converts it to grayscale,
+applies a Gaussian blur to cut down noise, and runs a Hough Circle Transform
+tuned to the disc's expected radius. Exactly one circle is expected per
+frame — zero or more than one is treated as a detection failure rather than
+guessed at. The detected pixel coordinate is then mapped to robot-frame
+coordinates using a linear transform calibrated against the physical
+workspace, with an extra correction term for the fact that the camera looks
+down at an angle rather than straight overhead, which otherwise skews the
+mapping near the far edge of the workspace. If the mapped position falls too
+close to the front edge of the workspace, a separate "edge routine" kicks
+in — the gripper approaches from the side at that boundary instead of
+straight down, since a normal vertical approach would risk pushing the disc
+off the edge.
 
-Each code layer has a matching `iterations` folder showing how it got there —
-see [`firmware/arm-controller/README.md`](firmware/arm-controller/README.md)
-and [`software/vision-pick-and-place/README.md`](software/vision-pick-and-place/README.md).
-Full system diagrams (sequencing, vision pipeline, why a gantry robot) are in
-[`evidence/documentation/architecture.md`](evidence/documentation/architecture.md),
-transcribed from the project's own "robot control logic" deck.
+**Putting it together.** The host script and the arm firmware run as two
+independent loops connected only by serial (plus Wi-Fi for the camera
+frames). The host's loop captures an image, processes it, and — once it has
+a valid detection — walks through the pick sequence one command at a time:
+close the gripper, home all joints, flip up, move to the camera pose,
+capture and detect, move over the disc (or run the edge routine), open,
+lower, grab, return to J3 home, flip down, move to the drop position while
+staying raised, lower, release, raise again, and home everything ready for
+the next cycle. The arm's own loop just reads one command at a time off
+serial, checks it's valid, executes it, and reports back — it has no idea
+what the overall task is, it only ever sees one instruction at a time. The
+blocking `DONE`/`ERROR` handshake between the two is what keeps them in
+lock-step despite running on separate boards.
 
 ## Repository layout
 
@@ -79,33 +107,5 @@ hardware/     CAD (STL exports) and component datasheets
 evidence/     Documentation, presentations, measurements, build/test photos and demo video
 ```
 
-Each top-level folder has its own README (start there): [`firmware/README.md`](firmware/README.md),
-[`software/README.md`](software/README.md), [`hardware/README.md`](hardware/README.md),
-[`evidence/README.md`](evidence/README.md). Task breakdown by subsystem and
-owner is in [`evidence/documentation/tasks-and-requirements.md`](evidence/documentation/tasks-and-requirements.md).
-
-## Demo & build photos
-
-- [`evidence/videos/pick-and-place-demo.MOV`](evidence/videos/pick-and-place-demo.MOV) —
-  the arm running a full pick → flip → place cycle
-- [`evidence/photos/build-and-dev/`](evidence/photos/build-and-dev) — the physical
-  build (gantry, wiring, stripboard) and the dev setup mid-debug (live camera
-  stream + the Hough-circle detection script running side by side)
-- [`evidence/photos/vision-test-captures/`](evidence/photos/vision-test-captures) — raw
-  workspace camera captures used to develop and tune the disc-detection routine
-- [`evidence/photos/hough-circles-detection-output.png`](evidence/photos/hough-circles-detection-output.png) —
-  an annotated detection result from the pipeline
-
-## Notes on what's included
-
-- CAD here is limited to **STL exports of the team's own parts**, grouped by
-  subsystem. The native SolidWorks/Inventor source files are large, proprietary
-  formats and are kept with the original project files rather than duplicated
-  here.
-- Third-party reference geometry (vendor robot-arm STEP files used only for
-  dimension comparisons during design) and an unrelated pitch deck from a
-  different module that had been saved in the same working folder were left
-  out — they aren't part of this project's own work.
-- A hardcoded Wi-Fi SSID/password in the camera firmware was replaced with
-  placeholders before publishing; a near-duplicate test sketch that contained
-  a real personal Wi-Fi password was excluded entirely rather than kept.
+Each folder has its own README with the details for that part of the
+project, including the build-order history behind the final code and CAD.

@@ -71,5 +71,5 @@ See [`presentations/`](presentations) (Group 16 Viva deck, Mechatronics
 Presentation deck) for the final system description and demonstrated
 sequence: home → move to camera pose → detect disc → pick → home →
 flip → move to drop → lower → drop → home, implemented end-to-end in
-[`../../software/vision-pick-and-place/final/FINALCODEMAX.py`](../../software/vision-pick-and-place/final/FINALCODEMAX.py)
-driving [`../../firmware/arm-controller/final/FINALONE.ino`](../../firmware/arm-controller/final/FINALONE.ino).
+[`../../software/vision-pick-and-place/final/pick_and_place_controller.py`](../../software/vision-pick-and-place/final/pick_and_place_controller.py)
+driving [`../../firmware/arm-controller/final/arm_controller.ino`](../../firmware/arm-controller/final/arm_controller.ino).

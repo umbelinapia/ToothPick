@@ -14,6 +14,5 @@ the arm controller).
 
 ## Note
 
-The Wi-Fi SSID/password in `CameraWebServer.ino` are placeholders — the
-original hardcoded credentials (including a real personal hotspot password
-found in one duplicate test sketch) were removed before publishing.
+Set your own Wi-Fi SSID/password at the top of `CameraWebServer.ino` before
+flashing — the camera and host laptop need to be on the same network.
