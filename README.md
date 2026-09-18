@@ -46,24 +46,41 @@ Target part (measured, see [`results/`](results)): a disc of mean diameter
 
 Each layer has a matching `iterations` / `python-iterations` folder showing how
 it got there — see [`firmware/README.md`](firmware/README.md) and
-[`vision-system/README.md`](vision-system/README.md).
+[`vision-system/README.md`](vision-system/README.md). Full system diagrams
+(sequencing, vision pipeline, why a gantry robot) are in
+[`docs/architecture.md`](docs/architecture.md), transcribed from the project's
+own "robot control logic" deck.
 
 ## Repository layout
 
 ```
 firmware/            ESP32 arm-controller code (final + iteration history)
-vision-system/        Camera firmware, host-side vision/pick-and-place code, datasheets, build photos
+vision-system/        Camera firmware, host-side vision/pick-and-place code, datasheets,
+                       Hough-circle detection output, raw workspace test captures
 cad/                  STL exports of the team's own printed/machined parts
-docs/                 Presentations, task/requirements breakdown, servo datasheet
+docs/                 Presentations, architecture diagrams, task/requirements breakdown, servo datasheet
 results/              Target-part measurement data
-media/                Build photos
+media/                Build/wiring/dev-session photos and a pick-and-place demo video
 ```
 
 ## Requirements, tasks & outcomes
 
 See [`docs/tasks-and-requirements.md`](docs/tasks-and-requirements.md) for the
-task breakdown by subsystem and owner, and [`docs/presentations/`](docs/presentations)
+task breakdown by subsystem and owner, [`docs/architecture.md`](docs/architecture.md)
+for how the system works end to end, and [`docs/presentations/`](docs/presentations)
 for the full project pitch and viva decks.
+
+## Demo & build photos
+
+- [`media/videos/pick-and-place-demo.MOV`](media/videos/pick-and-place-demo.MOV) —
+  the arm running a full pick → flip → place cycle
+- [`media/build-and-dev-photos/`](media/build-and-dev-photos) — the physical
+  build (gantry, wiring, stripboard) and the dev setup mid-debug (live camera
+  stream + the Hough-circle detection script running side by side)
+- [`vision-system/test-captures/`](vision-system/test-captures) — raw
+  workspace camera captures used to develop and tune the disc-detection routine
+- [`vision-system/images/hough-circles-detection-output.png`](vision-system/images/hough-circles-detection-output.png) —
+  an annotated detection result from the pipeline
 
 ## Notes on what's included
 

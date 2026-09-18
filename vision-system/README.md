@@ -29,7 +29,22 @@ a frame and see anything" to the final integrated controller:
 
 Datasheets for the sensor and module are in [`datasheets/`](datasheets):
 OV3660 image sensor, its onboard microphone, and the ESP32-S3 AI camera module
-itself. Build photos are in [`images/`](images).
+itself.
+
+## Detection results
+
+[`images/hough-circles-detection-output.png`](images/hough-circles-detection-output.png)
+is a real output frame from the detection pipeline (circle found and
+annotated). [`test-captures/`](test-captures) holds the raw top-down workspace
+photos — with and without the target disc, at different positions — that were
+used to develop and tune the Hough-circle parameters
+(`dp`, `minDist`, `param1`/`param2`, `minRadius`/`maxRadius` in
+[`final/FINALCODEMAX.py`](final/FINALCODEMAX.py)). `images/setup-1.jpg`
+through `setup-3.jpg` are general camera/workspace setup photos.
+
+See [`../docs/architecture.md`](../docs/architecture.md) for the full pipeline
+diagram (image acquisition → processing → detection → coordinate transform)
+and the two-loop serial handshake between the Python host and the Arduino arm.
 
 ## Note
 
