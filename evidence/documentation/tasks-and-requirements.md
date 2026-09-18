@@ -19,7 +19,7 @@ repeatable, simple; a stable structure; suited to the target environment.
 - Vision system able to locate the target disc and hand off coordinates to the arm
 - Modular, adaptable, intuitive firmware functions (scalable to new end-effector routines)
 
-Target part, measured (see [`../results/disk-measurement-data.xlsx`](../results/disk-measurement-data.xlsx)):
+Target part, measured (see [`../measurements/disk-measurement-data.xlsx`](../measurements/disk-measurement-data.xlsx)):
 mean diameter **25.76 mm**, mean height **6.26 mm** (5 samples).
 
 ## Sequencing rules (safety/consistency)
@@ -71,5 +71,5 @@ See [`presentations/`](presentations) (Group 16 Viva deck, Mechatronics
 Presentation deck) for the final system description and demonstrated
 sequence: home → move to camera pose → detect disc → pick → home →
 flip → move to drop → lower → drop → home, implemented end-to-end in
-[`../vision-system/final/FINALCODEMAX.py`](../vision-system/final/FINALCODEMAX.py)
-driving [`../firmware/final/FINALONE.ino`](../firmware/final/FINALONE.ino).
+[`../../software/vision-pick-and-place/final/FINALCODEMAX.py`](../../software/vision-pick-and-place/final/FINALCODEMAX.py)
+driving [`../../firmware/arm-controller/final/FINALONE.ino`](../../firmware/arm-controller/final/FINALONE.ino).

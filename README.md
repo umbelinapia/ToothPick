@@ -22,8 +22,8 @@ Group 16: **Umbelina**, **Nikitha Prabhakar**, **Max**, **Daniel**.
 4. The controller drives the arm over serial to pick the disc, home, flip the
    end-effector, move to the drop position, and release — then returns home.
 
-Target part (measured, see [`results/`](results)): a disc of mean diameter
-**25.76 mm** and mean height **6.26 mm**.
+Target part (measured, see [`evidence/measurements/`](evidence/measurements)):
+a disc of mean diameter **25.76 mm** and mean height **6.26 mm**.
 
 ## Hardware
 
@@ -34,52 +34,55 @@ Target part (measured, see [`results/`](results)): a disc of mean diameter
   steppers + servos, exposes a serial command API)
 - Separate **ESP32-S3 AI camera module** (OV3660) for vision, wired to a
   stripboard to minimise loose wiring and disconnects
-- 3D-printed structural/end-effector parts — CAD in [`cad/`](cad)
+- 3D-printed structural/end-effector parts — CAD in [`hardware/cad/`](hardware/cad)
 
-## Software architecture
+## System architecture
 
 | Layer | Location | Role |
 |---|---|---|
-| Arm firmware | [`firmware/final/FINALONE.ino`](firmware/final/FINALONE.ino) | Runs on the arm's ESP32-S3. Drives steppers/servos, handles homing, and exposes a serial command API (`home(J1)`, `coords(J2,100,8000)`, `open()`, `close()`, `flipUp()`, `flipDown()`, `cameraPose()`, `pos()`). Enforces safety interlocks — flipping is only allowed when J3 is at true home, and drop-open is only allowed when J1 is at home. |
-| Camera firmware | [`vision-system/esp32-camera-firmware/CameraWebServer.ino`](vision-system/esp32-camera-firmware/CameraWebServer.ino) | Runs on the camera's ESP32-S3. Serves a `/capture` HTTP endpoint so the host can pull a still frame over Wi-Fi. |
-| Host controller | [`vision-system/final/FINALCODEMAX.py`](vision-system/final/FINALCODEMAX.py) | Runs on a laptop. Talks to the arm over serial and the camera over HTTP, does the OpenCV disc detection + coordinate mapping, and drives the full pick → flip → drop cycle described above. |
+| Arm firmware | [`firmware/arm-controller/final/FINALONE.ino`](firmware/arm-controller/final/FINALONE.ino) | Runs on the arm's ESP32-S3. Drives steppers/servos, handles homing, and exposes a serial command API (`home(J1)`, `coords(J2,100,8000)`, `open()`, `close()`, `flipUp()`, `flipDown()`, `cameraPose()`, `pos()`). Enforces safety interlocks — flipping is only allowed when J3 is at true home, and drop-open is only allowed when J1 is at home. |
+| Camera firmware | [`firmware/camera/CameraWebServer.ino`](firmware/camera/CameraWebServer.ino) | Runs on the camera's ESP32-S3. Serves a `/capture` HTTP endpoint so the host can pull a still frame over Wi-Fi. |
+| Host controller | [`software/vision-pick-and-place/final/FINALCODEMAX.py`](software/vision-pick-and-place/final/FINALCODEMAX.py) | Runs on a laptop. Talks to the arm over serial and the camera over HTTP, does the OpenCV disc detection + coordinate mapping, and drives the full pick → flip → drop cycle described above. |
 
-Each layer has a matching `iterations` / `python-iterations` folder showing how
-it got there — see [`firmware/README.md`](firmware/README.md) and
-[`vision-system/README.md`](vision-system/README.md). Full system diagrams
-(sequencing, vision pipeline, why a gantry robot) are in
-[`docs/architecture.md`](docs/architecture.md), transcribed from the project's
-own "robot control logic" deck.
+Each code layer has a matching `iterations` folder showing how it got there —
+see [`firmware/arm-controller/README.md`](firmware/arm-controller/README.md)
+and [`software/vision-pick-and-place/README.md`](software/vision-pick-and-place/README.md).
+Full system diagrams (sequencing, vision pipeline, why a gantry robot) are in
+[`evidence/documentation/architecture.md`](evidence/documentation/architecture.md),
+transcribed from the project's own "robot control logic" deck.
 
 ## Repository layout
 
 ```
-firmware/            ESP32 arm-controller code (final + iteration history)
-vision-system/        Camera firmware, host-side vision/pick-and-place code, datasheets,
-                       Hough-circle detection output, raw workspace test captures
-cad/                  STL exports of the team's own printed/machined parts
-docs/                 Presentations, architecture diagrams, task/requirements breakdown, servo datasheet
-results/              Target-part measurement data
-media/                Build/wiring/dev-session photos and a pick-and-place demo video
+firmware/     Code that runs on the two ESP32-S3 boards (arm controller + camera)
+software/     Host-side (laptop) vision + pick-and-place controller
+hardware/     CAD (STL exports) and component datasheets
+evidence/     Documentation, presentations, measurements, build/test photos and demo video
 ```
+
+Each top-level folder has its own README (start there): [`firmware/README.md`](firmware/README.md),
+[`software/README.md`](software/README.md), [`hardware/README.md`](hardware/README.md),
+[`evidence/README.md`](evidence/README.md).
 
 ## Requirements, tasks & outcomes
 
-See [`docs/tasks-and-requirements.md`](docs/tasks-and-requirements.md) for the
-task breakdown by subsystem and owner, [`docs/architecture.md`](docs/architecture.md)
-for how the system works end to end, and [`docs/presentations/`](docs/presentations)
+See [`evidence/documentation/tasks-and-requirements.md`](evidence/documentation/tasks-and-requirements.md)
+for the task breakdown by subsystem and owner,
+[`evidence/documentation/architecture.md`](evidence/documentation/architecture.md)
+for how the system works end to end, and
+[`evidence/documentation/presentations/`](evidence/documentation/presentations)
 for the full project pitch and viva decks.
 
 ## Demo & build photos
 
-- [`media/videos/pick-and-place-demo.MOV`](media/videos/pick-and-place-demo.MOV) —
+- [`evidence/videos/pick-and-place-demo.MOV`](evidence/videos/pick-and-place-demo.MOV) —
   the arm running a full pick → flip → place cycle
-- [`media/build-and-dev-photos/`](media/build-and-dev-photos) — the physical
+- [`evidence/photos/build-and-dev/`](evidence/photos/build-and-dev) — the physical
   build (gantry, wiring, stripboard) and the dev setup mid-debug (live camera
   stream + the Hough-circle detection script running side by side)
-- [`vision-system/test-captures/`](vision-system/test-captures) — raw
+- [`evidence/photos/vision-test-captures/`](evidence/photos/vision-test-captures) — raw
   workspace camera captures used to develop and tune the disc-detection routine
-- [`vision-system/images/hough-circles-detection-output.png`](vision-system/images/hough-circles-detection-output.png) —
+- [`evidence/photos/hough-circles-detection-output.png`](evidence/photos/hough-circles-detection-output.png) —
   an annotated detection result from the pipeline
 
 ## Notes on what's included
