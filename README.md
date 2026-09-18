@@ -1,29 +1,48 @@
-# Toothpick — Autonomous Cylinder Pick System
+# 3rd year Mechatronics group project
 
-3rd-year Mechatronics group project (Loughborough University, Group 16).
+Loughborough University, Module 25WSC912 (Mechatronics and Instrumentation),
+CW2: *Design and Build of a Disc Flipping and Positioning Mechanism*.
+Group 16 — **Umbelina**, **Nikitha Prabhakar**, **Max**, **Daniel**.
+Project codename: **Toothpick**.
 
-**"SEE IT. PICK IT. SORT IT."** A vision-guided 3-DOF gantry robot that locates a
-cylindrical disc with an onboard camera, picks it up, flips the end-effector, and
-places it at a drop location — fully autonomously, with no manual coordinate entry.
+## Project aim
 
-## Team
+A manufacturer's forming machine outputs plastic disc components in the
+wrong orientation and an undefined location. This used to be fixed by a
+worker by hand — with a 1% misorientation rate, and no longer safe as the
+line moves to remote, unmanned automation. Our aim was to design, build, and
+test an automated system that locates, flips, and places the disc reliably,
+with no person in the loop.
 
-Group 16: **Umbelina**, **Nikitha Prabhakar**, **Max**, **Daniel**.
+## Project tasks
 
-## What it does
+- Locate the disc using sensors (position is uncertain, so vision sensing is
+  used even when not strictly required)
+- Flip the disc upside down ("heads" to "tails")
+- Pick up the disc and place it at a fixed destination
+- Run repeatable experiments picking the disc from random starting positions
 
-1. The arm homes all three joints against limit switches, then moves to a fixed
-   camera pose.
-2. An ESP32-S3 AI camera (OV3660 sensor) captures a frame of the workspace.
-3. A host-side Python controller pulls the image over Wi-Fi, runs a Hough Circle
-   detection pass to find the cylindrical disc, and maps its pixel coordinates
-   to robot joint coordinates (with a special "edge routine" for parts detected
-   near the boundary of the workspace).
-4. The controller drives the arm over serial to pick the disc, home, flip the
-   end-effector, move to the drop position, and release — then returns home.
+## Project objectives
 
-Target part (measured, see [`evidence/measurements/`](evidence/measurements)):
-a disc of mean diameter **25.76 mm** and mean height **6.26 mm**.
+- 3-DOF gantry robot built from IGUS Apiro modular drive gear units,
+  controlled by an ESP32-S3
+- Vision-guided disc detection (camera + OpenCV), not fixed coordinates
+- Reliable, repeatable homing so every cycle starts from a known reference
+- Safety interlocks so the flip/drop motions can't happen in an unsafe joint
+  position
+- Fast, consistent cycle time — assessed live as 4 runs in a 6-minute demo
+- Stay within the £50 build budget
+
+## Project outcomes
+
+- Working end-to-end pipeline: home → move to camera pose → detect disc →
+  pick → home → flip → move to drop → place → home
+  (see [`firmware/`](firmware) and [`software/`](software))
+- Vision pipeline validated against the measured part: mean diameter
+  **25.76 mm**, mean height **6.26 mm** — see [`evidence/measurements/`](evidence/measurements)
+- Full sequence built, tested, and demonstrated at the Viva Voce — see
+  [`evidence/documentation/presentations/`](evidence/documentation/presentations)
+  and [`evidence/videos/pick-and-place-demo.MOV`](evidence/videos/pick-and-place-demo.MOV)
 
 ## Hardware
 
@@ -62,16 +81,8 @@ evidence/     Documentation, presentations, measurements, build/test photos and 
 
 Each top-level folder has its own README (start there): [`firmware/README.md`](firmware/README.md),
 [`software/README.md`](software/README.md), [`hardware/README.md`](hardware/README.md),
-[`evidence/README.md`](evidence/README.md).
-
-## Requirements, tasks & outcomes
-
-See [`evidence/documentation/tasks-and-requirements.md`](evidence/documentation/tasks-and-requirements.md)
-for the task breakdown by subsystem and owner,
-[`evidence/documentation/architecture.md`](evidence/documentation/architecture.md)
-for how the system works end to end, and
-[`evidence/documentation/presentations/`](evidence/documentation/presentations)
-for the full project pitch and viva decks.
+[`evidence/README.md`](evidence/README.md). Task breakdown by subsystem and
+owner is in [`evidence/documentation/tasks-and-requirements.md`](evidence/documentation/tasks-and-requirements.md).
 
 ## Demo & build photos
 
