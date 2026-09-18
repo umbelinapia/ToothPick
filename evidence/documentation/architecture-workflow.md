@@ -1,9 +1,9 @@
 # Architecture / workflow
 
-Full source diagrams: [`robot-control-logic.pdf`](robot-control-logic.pdf) —
+Full source diagrams: [`robot-control-logic.pdf`](robot-control-logic.pdf),
 **my slides**, covering the robot structure, vision system, and task
 sequencing (this section of the group presentation was my share of the
-work). This is also where the repo name comes from — "toothpick" was the
+work). This is also where the repo name comes from: "toothpick" was the
 project's internal codename, after the toothed-rail gantry drivetrain.
 
 ## System overview
@@ -28,8 +28,8 @@ project's internal codename, after the toothed-rail gantry drivetrain.
 
 ## Robot structure
 
-**Gantry robot, Cartesian configuration** — chosen over an articulated arm for
-simple kinematics (no inverse-kinematics solve needed — each axis maps
+**Gantry robot, Cartesian configuration**, chosen over an articulated arm for
+simple kinematics (no inverse-kinematics solve needed since each axis maps
 directly to a Cartesian/joint coordinate), straightforward screw-and-nut
 assembly, and simpler cable management along the linear rails.
 

@@ -1,6 +1,6 @@
 # Requirements
 
-**Product goal** — reliably detect, pick, flip and place a cylindrical disc
+**Product goal:** reliably detect, pick, flip and place a cylindrical disc
 without manual coordinate entry. Design drivers: accurate, repeatable,
 simple; a stable structure; suited to the target environment.
 

@@ -2,7 +2,7 @@
 
 The coursework brief (CW2, 25WSC912) set the task as: design, build, and test
 a system to locate the disc, flip it upside down, and pick and place it into
-a fixed destination — with sensors used to locate the disc even where its
+a fixed destination, with sensors used to locate the disc even where its
 position might otherwise be predictable, since the flip can leave it
 uncertain.
 
