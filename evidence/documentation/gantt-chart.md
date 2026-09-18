@@ -1,7 +1,6 @@
 # Gantt chart
 
-Task breakdown and ownership (dates and status dropped — this is the "who
-worked on what", not the schedule).
+Task breakdown and ownership
 
 ## Preliminary
 
