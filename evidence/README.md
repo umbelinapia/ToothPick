@@ -3,12 +3,14 @@
 Project record: documentation, presentations, measurements, and photo/video
 evidence of the build and testing process.
 
-- [`documentation/`](documentation) — [`architecture.md`](documentation/architecture.md)
-  (how the system works end to end), [`tasks-and-requirements.md`](documentation/tasks-and-requirements.md)
-  (task breakdown by subsystem/owner, derived from [`gantt-chart.xlsx`](documentation/gantt-chart.xlsx)),
-  [`robot-control-logic.pdf`](documentation/robot-control-logic.pdf) (the
-  project's own architecture deck — source for `architecture.md`), and
-  [`presentations/`](documentation/presentations) (Viva and project decks).
+- [`documentation/`](documentation) — [`tasks.md`](documentation/tasks.md),
+  [`requirements.md`](documentation/requirements.md), [`gantt-chart.md`](documentation/gantt-chart.md)
+  (who worked on what), and [`architecture-workflow.md`](documentation/architecture-workflow.md)
+  (how the system works end to end). [`robot-control-logic.pdf`](documentation/robot-control-logic.pdf)
+  is **my own slides** — the robot structure / vision / sequencing section of
+  the group presentation was my individual share of the work, and is the
+  source for `architecture-workflow.md`. [`presentations/`](documentation/presentations)
+  holds the full team decks (Viva and project presentation).
 - [`measurements/`](measurements) — target-part measurement data.
 - [`photos/`](photos) — [`build-and-dev/`](photos/build-and-dev) (assembly,
   wiring, and live dev-session photos), [`vision-test-captures/`](photos/vision-test-captures)

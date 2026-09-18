@@ -1,10 +1,5 @@
 # 3rd year Mechatronics group project
 
-Loughborough University, Module 25WSC912 (Mechatronics and Instrumentation),
-CW2: *Design and Build of a Disc Flipping and Positioning Mechanism*.
-Group 16 — **Umbelina**, **Nikitha Prabhakar**, **Max**, **Daniel**.
-Project codename: **Toothpick**.
-
 ## Project aim
 
 A manufacturer's forming machine outputs plastic disc components in the

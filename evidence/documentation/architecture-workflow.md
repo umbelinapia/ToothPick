@@ -1,8 +1,10 @@
-# Architecture
+# Architecture / workflow
 
-Full source diagrams: [`robot-control-logic.pdf`](robot-control-logic.pdf) (this
-is also where the repo name comes from — "toothpick" was the project's internal
-codename, after the toothed-rail gantry drivetrain).
+Full source diagrams: [`robot-control-logic.pdf`](robot-control-logic.pdf) —
+**my slides**, covering the robot structure, vision system, and task
+sequencing (this section of the group presentation was my share of the
+work). This is also where the repo name comes from — "toothpick" was the
+project's internal codename, after the toothed-rail gantry drivetrain.
 
 ## System overview
 

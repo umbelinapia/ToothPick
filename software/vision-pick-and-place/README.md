@@ -32,7 +32,7 @@ at different positions — used to develop and tune the Hough-circle parameters
 (`dp`, `minDist`, `param1`/`param2`, `minRadius`/`maxRadius` in
 [`final/pick_and_place_controller.py`](final/pick_and_place_controller.py)).
 
-See [`../../evidence/documentation/architecture.md`](../../evidence/documentation/architecture.md)
+See [`../../evidence/documentation/architecture-workflow.md`](../../evidence/documentation/architecture-workflow.md)
 for the full pipeline diagram (image acquisition → processing → detection →
 coordinate transform) and the two-loop serial handshake between this script
 and the arm firmware.
